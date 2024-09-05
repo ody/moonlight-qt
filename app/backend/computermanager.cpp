@@ -976,4 +976,15 @@ QString ComputerManager::generatePinString()
     return QString::asprintf("%04u", dist(engine));
 }
 
+void ComputerManager::setWolMacAddress(NvComputer* computer, QByteArray macAddress)
+{
+    {
+        QWriteLocker lock(&computer->lock);
+        computer->wolMacAddress = macAddress;
+    }
+
+    // Notify the UI of the state change
+    handleComputerStateChanged(computer);
+}
+
 #include "computermanager.moc"

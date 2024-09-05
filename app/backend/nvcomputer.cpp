@@ -230,10 +230,21 @@ bool NvComputer::wake() const
             return false;
         }
 
+        QByteArray macAddressToUse;
+
+        if (!wolMacAddress.isEmpty()) {
+            macAddressToUse = wolMacAddress;
+        } else if (!macAddress.isEmpty()) {
+            macAddressToUse = macAddress;
+        } else {
+            qWarning() << name << "has no MAC address stored";
+            return false;
+        }
+
         // Create the WoL payload
         wolPayload.append(QByteArray::fromHex("FFFFFFFFFFFF"));
         for (int i = 0; i < 16; i++) {
-            wolPayload.append(macAddress);
+            wolPayload.append(macAddressToUse);
         }
         Q_ASSERT(wolPayload.size() == 102);
     }

@@ -224,6 +224,13 @@ CenteredGridView {
                         showPcDetailsDialog.open()
                     }
                 }
+                MenuItem {
+                    text: qsTr("Set WOL MAC")
+                    onTriggered: {
+                        setWolMacDialog.pcIndex = index
+                        setWolMacDialog.open()
+                    }
+                }
             }
         }
 
@@ -355,6 +362,51 @@ CenteredGridView {
 
             // Stop showing the spinner and show the image instead
             showSpinner = false
+        }
+    }
+    NavigableDialog {
+        id: setWolMacDialog
+        property string label: qsTr("Enter the Wake-on-LAN MAC address for this PC:")
+        property int pcIndex : -1
+
+        standardButtons: Dialog.Ok | Dialog.Cancel
+
+        onOpened: {
+            // Force keyboard focus on the textbox so keyboard navigation works
+            macAddressText.forceActiveFocus()
+        }
+
+        onClosed: {
+            macAddressText.clear()
+        }
+
+        onAccepted: {
+            if (macAddressText.text) {
+                computerModel.setWolMacAddress(pcIndex, macAddressText.text)
+            }
+        }
+
+        ColumnLayout {
+            Label {
+                text: setWolMacDialog.label
+                font.bold: true
+            }
+
+            TextField {
+                id: macAddressText
+                placeholderText: "00:00:00:00:00:00"
+                Layout.fillWidth: true
+                focus: true
+                inputMask: "HH:HH:HH:HH:HH:HH;_"
+
+                Keys.onReturnPressed: {
+                    setWolMacDialog.accept()
+                }
+
+                Keys.onEnterPressed: {
+                    setWolMacDialog.accept()
+                }
+            }
         }
     }
 

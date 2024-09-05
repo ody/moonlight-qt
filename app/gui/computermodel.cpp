@@ -37,7 +37,7 @@ QVariant ComputerModel::data(const QModelIndex& index, int role) const
     case BusyRole:
         return computer->currentGameId != 0;
     case WakeableRole:
-        return !computer->macAddress.isEmpty();
+        return !computer->macAddress.isEmpty() || !computer->wolMacAddress.isEmpty();
     case StatusUnknownRole:
         return computer->state == NvComputer::CS_UNKNOWN;
     case ServerSupportedRole:
@@ -78,6 +78,7 @@ QVariant ComputerModel::data(const QModelIndex& index, int role) const
                tr("IPv6 Address: %1").arg(computer->ipv6Address.toString()) + '\n' +
                tr("Manual Address: %1").arg(computer->manualAddress.toString()) + '\n' +
                tr("MAC Address: %1").arg(computer->macAddress.isEmpty() ? tr("Unknown") : QString(computer->macAddress.toHex(':'))) + '\n' +
+               tr("WOL MAC Address: %1").arg(computer->wolMacAddress.isEmpty() ? tr("Unknown") : QString(computer->wolMacAddress.toHex(':'))) + '\n' +
                tr("Pair State: %1").arg(pairState) + '\n' +
                tr("Running Game ID: %1").arg(computer->state == NvComputer::CS_ONLINE ? QString::number(computer->currentGameId) : tr("Unknown")) + '\n' +
                tr("HTTPS Port: %1").arg(computer->state == NvComputer::CS_ONLINE ? QString::number(computer->activeHttpsPort) : tr("Unknown"));
@@ -177,6 +178,13 @@ void ComputerModel::renameComputer(int computerIndex, QString name)
     Q_ASSERT(computerIndex < m_Computers.count());
 
     m_ComputerManager->renameHost(m_Computers[computerIndex], name);
+}
+
+void ComputerModel::setWolMacAddress(int computerIndex, QString macAddress)
+{
+    Q_ASSERT(computerIndex < m_Computers.count());
+
+    m_ComputerManager->setWolMacAddress(m_Computers[computerIndex], QByteArray::fromHex(macAddress.toLatin1()));
 }
 
 QString ComputerModel::generatePinString()

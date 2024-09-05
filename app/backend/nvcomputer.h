@@ -107,6 +107,7 @@ public:
     NvAddress ipv6Address;
     NvAddress manualAddress;
     QByteArray macAddress;
+    QByteArray wolMacAddress;
     QString name;
     bool hasCustomName;
     QString uuid;

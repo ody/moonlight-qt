@@ -243,6 +243,8 @@ public:
 
     void renameHost(NvComputer* computer, QString name);
 
+    void setWolMacAddress(NvComputer* computer, QByteArray macAddress);
+
     void clientSideAttributeUpdated(NvComputer* computer);
 
 signals:
